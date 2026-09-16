@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestión de Pagos & Balance</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css">
+
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation (Sin footer adentro) -->
+    <aside class="sidebar">
+      <div class="brand">
+        <i class="ph-bold ph-wallet brand-icon"></i>
+        <h2>FinanzApp</h2>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#" id="nav-dashboard" class="nav-item active" onclick="cambiarSeccion('dashboard', event)">
+          <i class="ph-bold ph-squares-four"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" id="nav-boletas" class="nav-item" onclick="cambiarSeccion('boletas', event)">
+          <i class="ph-bold ph-receipt"></i>
+          <span>Boletas / Servicios</span>
+        </a>
+        <a href="#" id="nav-depositos" class="nav-item" onclick="cambiarSeccion('depositos', event)">
+          <i class="ph-bold ph-arrows-down-up"></i>
+          <span>Depósitos</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-pill">
+          <div class="avatar">D</div>
+          <div class="user-info">
+            <span class="user-role">Sistema en Prueba</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <header class="topbar">
+        <div>
+          <h1 id="topbarTitle" class="page-title">Balance & Registro</h1>
+          <p id="topbarSubtitle" class="page-subtitle">Control de servicios, universidad y depósitos compartidos.</p>
+        </div>
+        <div class="status-indicator">
+          <span class="dot"></span> Supabase Conectado
+        </div>
+      </header>
+
+      <!-- Stats Grid -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon income">
+            <i class="ph-bold ph-arrow-down-left"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Total Depositado</span>
+            <h3 id="totalDepositado" class="stat-value text-emerald">S/ 0.00</h3>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon expense">
+            <i class="ph-bold ph-arrow-up-right"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Total Pagado</span>
+            <h3 id="totalPagado" class="stat-value text-rose">S/ 0.00</h3>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon balance">
+            <i class="ph-bold ph-scales"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Saldo Disponible</span>
+            <h3 id="saldoDisponible" class="stat-value text-blue">S/ 0.00</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 1: DASHBOARD -->
+      <section id="sec-dashboard" class="tab-content active">
+        <div class="panel-card form-panel-full">
+          <div class="panel-header">
+            <h3><i class="ph-bold ph-plus-circle"></i> Nuevo Registro</h3>
+          </div>
+          
+          <form id="formTransaccion" class="custom-form">
+            
+            <!-- PASO 1 REFORZADO -->
+            <div class="step-one-hero-box">
+              <div class="hero-box-header">
+                <span class="hero-badge"><i class="ph-bold ph-cursor-click"></i> PASO 1 REQUERIDO</span>
+                <h2 class="hero-title">¿Qué operación deseas realizar?</h2>
+                <p class="hero-desc">Selecciona una opción para desplegar las categorías correspondientes.</p>
+              </div>
+
+              <div class="type-selector-hero">
+                <label class="hero-option-card">
+                  <input type="radio" name="tipoOperacion" value="DEPOSITO_RECIBIDO" onchange="mostrarRestoFormulario()">
+                  <div class="hero-card-content">
+                    <div class="hero-card-icon icon-deposit">
+                      <i class="ph-bold ph-arrow-down-left"></i>
+                    </div>
+                    <div class="hero-card-text">
+                      <span class="hero-card-title">Hacer Depósito</span>
+                      <span class="hero-card-sub">Abono o transferencia recibida</span>
+                    </div>
+                    <i class="ph-bold ph-check-circle check-selected-icon"></i>
+                  </div>
+                </label>
+
+                <label class="hero-option-card">
+                  <input type="radio" name="tipoOperacion" value="PAGO_GASTO" onchange="mostrarRestoFormulario()">
+                  <div class="hero-card-content">
+                    <div class="hero-card-icon icon-payment">
+                      <i class="ph-bold ph-check-circle"></i>
+                    </div>
+                    <div class="hero-card-text">
+                      <span class="hero-card-title">Hacer Pago</span>
+                      <span class="hero-card-sub">Pago de servicio, universidad u otros</span>
+                    </div>
+                    <i class="ph-bold ph-check-circle check-selected-icon"></i>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- PASO 2: CONTENEDOR DIRECTO -->
+            <div id="seccionesRestantesFormulario" style="display: none;" class="step-two-container">
+              
+              <div class="step-two-divider">
+                <span>PASO 2: COMPLETA LOS DETALLES</span>
+              </div>
+
+              <!-- 2. Categoría -->
+              <div class="form-group margin-top-step">
+                <label class="form-label-title">2. Selecciona la Categoría</label>
+                <div id="gridCategorias" class="category-cards-grid"></div>
+                <input type="hidden" id="categoriaIdInput">
+                <input type="hidden" id="montoInput">
+              </div>
+
+              <!-- Sub-Opciones para Transferencia Semanal -->
+              <div id="wrapperOpcionesSemanal" class="form-group margin-top-step" style="display: none;">
+                <label class="form-label-title">Selecciona la Cuota Semanal</label>
+                <div class="semanal-cards-grid">
+                  <div class="semanal-card selected" onclick="seleccionarMontoSemanal(150, this)">
+                    <span>Tramo Lunes</span>
+                    <span class="sub-monto">S/ 150.00</span>
+                  </div>
+                  <div class="semanal-card" onclick="seleccionarMontoSemanal(100, this)">
+                    <span>Tramo Jueves</span>
+                    <span class="sub-monto">S/ 100.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Meses -->
+              <div class="form-group margin-top-step">
+                <label class="form-label-title">3. Selecciona el Periodo / Mes</label>
+                <div id="gridMeses" class="months-cards-grid"></div>
+                <input type="hidden" id="mesInput">
+              </div>
+
+              <!-- 4. Confirmación de Monto -->
+              <div class="form-group margin-top-step">
+                <label class="form-label-title">4. Importe a Procesar</label>
+                
+                <div id="displayMontoCard" class="monto-card-display">
+                  <div class="monto-badge">
+                    <span class="monto-label">Monto Total</span>
+                    <h2 id="displayMontoText">S/ 0.00</h2>
+                  </div>
+                </div>
+
+                <!-- Teclado Numérico para Gastos Adicionales -->
+                <div id="wrapperKeypad" class="keypad-wrapper" style="display: none;">
+                  <div class="numpad-grid">
+                    <button type="button" class="num-btn" onclick="pressNumpad('1')">1</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('2')">2</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('3')">3</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('4')">4</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('5')">5</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('6')">6</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('7')">7</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('8')">8</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('9')">9</button>
+                    <button type="button" class="num-btn action" onclick="pressNumpad('.')">.</button>
+                    <button type="button" class="num-btn" onclick="pressNumpad('0')">0</button>
+                    <button type="button" class="num-btn action" onclick="pressNumpad('back')"><i class="ph-bold ph-backspace"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. COMPROBANTE DE PAGO -->
+              <div class="form-group margin-top-step file-upload-hero-box">
+                <div class="file-box-header">
+                  <span class="file-badge"><i class="ph-bold ph-warning-circle"></i> OBLIGATORIO PARA CONTINUAR</span>
+                  <label id="comprobanteTitleLabel" class="file-box-title">5. Adjuntar Comprobante / Recibo</label>
+                  <p class="file-box-desc">Debes adjuntar la imagen del voucher. Sin este requisito el sistema rechazará el registro.</p>
+                </div>
+
+                <div class="file-upload-wrapper">
+                  <input type="file" id="comprobanteDirectoInput" accept="image/*" class="file-input-hidden" multiple>
+                  <label for="comprobanteDirectoInput" class="file-upload-box-hero">
+                    <div class="file-upload-icon">
+                      <i class="ph-bold ph-upload-simple"></i>
+                    </div>
+                    <div class="file-upload-texts">
+                      <span id="fileNameLabel" class="file-main-label">Haz clic aquí para seleccionar la captura</span>
+                      <span class="file-sub-label">Acepta archivos JPG, PNG de vouchers bancarios</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary margin-top-step">
+                <i class="ph-bold ph-floppy-disk"></i> Guardar Operación
+              </button>
+
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: HISTORIAL POR CATEGORÍAS -->
+      <section id="sec-historial" class="tab-content" style="display: none;">
+        <div class="panel-card list-panel-full">
+          <div class="panel-header-flex">
+            <div>
+              <h3 id="tituloLista"><i class="ph-bold ph-receipt"></i> Historial por Categorías</h3>
+              <p class="panel-subtitle">Selecciona cualquier categoría para desplegar sus registros y vouchers correspondientes.</p>
+            </div>
+          </div>
+
+          <!-- Buscador -->
+          <div class="search-box-wrapper">
+            <i class="ph-bold ph-magnifying-glass search-icon"></i>
+            <input type="text" id="buscadorInput" class="form-input search-input" placeholder="Buscar por mes (Ej. Julio)..." oninput="filtrarPorBuscador(this.value)">
+          </div>
+
+          <!-- Módulos de Categorías Acordeón -->
+          <div id="listaCategoriasAgrupadas" class="accordion-categories-container"></div>
+        </div>
+      </section>
+
+      <!-- PIE DE PÁGINA EN EL CONTENEDOR CENTRAL (Abajo y centrado) -->
+      <footer class="system-footer">
+        <div class="footer-content">
+          <div class="footer-badge">
+            <i class="ph-bold ph-shield-check"></i> Sistema Oficial de Control Finanzas
+          </div>
+          <p class="footer-author">
+            Desarrollado por <strong>Diego Valentino Mayo Samaritano</strong>
+          </p>
+          <p class="footer-purpose">
+            <i class="ph-bold ph-info"></i> Este sistema ha sido creado exclusivamente para garantizar un control riguroso, trazabilidad y máxima transparencia en la gestión de depósitos y pagos de servicios.
+          </p>
+        </div>
+      </footer>
+
+    </main>
+
+  </div>
+
+  <!-- Modal Emergente para Detalle / Voucher -->
+  <div id="modalDetalle" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" onclick="cerrarModalDetalle()">
+        <i class="ph-bold ph-x"></i>
+      </button>
+      
+      <div class="modal-header">
+        <span id="modalCategoriaBadge" class="tx-category">Categoría</span>
+        <h3 id="modalConceptoTitle">Periodo - Concepto</h3>
+        <h1 id="modalMontoText" class="modal-monto">S/ 0.00</h1>
+      </div>
+
+      <div class="modal-body-details">
+        <div class="detail-row">
+          <span><i class="ph-bold ph-calendar-blank"></i> Fecha y Hora:</span>
+          <strong id="modalFechaText">--/--/---- --:--</strong>
+        </div>
+        <div class="detail-row">
+          <span><i class="ph-bold ph-swap"></i> Tipo de Movimiento:</span>
+          <strong id="modalTipoText">--</strong>
+        </div>
+      </div>
+
+      <div class="modal-voucher-wrapper">
+        <span class="voucher-label"><i class="ph-bold ph-file-text"></i> Capturas Adjuntas:</span>
+        <div id="modalVouchersGrid" class="vouchers-gallery-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carga ordenada de scripts -->
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/UI.js"></script>
+  <script src="js/transacciones.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

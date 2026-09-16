@@ -1,0 +1,31 @@
+<aside class="sidebar">
+  <div class="brand">
+    <i class="ph-bold ph-wallet brand-icon"></i>
+    <h2>FinanzApp</h2>
+  </div>
+
+  <nav class="nav-menu">
+    <a href="#" id="btn-dashboard" class="nav-item active" onclick="filtrarMovimientos('TODOS', event)">
+      <i class="ph-bold ph-squares-four"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="#" id="btn-boletas" class="nav-item" onclick="filtrarMovimientos('PAGO_GASTO', event)">
+      <i class="ph-bold ph-receipt"></i>
+      <span>Boletas</span>
+    </a>
+    <a href="#" id="btn-depositos" class="nav-item" onclick="filtrarMovimientos('DEPOSITO_RECIBIDO', event)">
+      <i class="ph-bold ph-arrows-down-up"></i>
+      <span>Depósitos</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="avatar">FV</div>
+      <div class="user-info">
+        <span class="user-name">Familiar Remote</span>
+        <span class="user-role">Modo Localhost</span>
+      </div>
+    </div>
+  </div>
+</aside>

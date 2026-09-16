@@ -1,0 +1,100 @@
+<div class="panel-card form-panel">
+  <div class="panel-header">
+    <h3><i class="ph-bold ph-plus-circle"></i> Nuevo Registro de Pago / Depósito</h3>
+  </div>
+  
+  <form id="formTransaccion" class="custom-form">
+    
+    <!-- 1. Categoría -->
+    <div class="form-group">
+      <label class="form-label-title">1. Selecciona la Categoría</label>
+      <div id="gridCategorias" class="category-cards-grid"></div>
+      <input type="hidden" id="categoriaIdInput" required>
+      <input type="hidden" id="montoInput" required>
+    </div>
+
+    <!-- Sub-Opciones para Transferencia Semanal -->
+    <div id="wrapperOpcionesSemanal" class="form-group" style="display: none;">
+      <label class="form-label-title">Selecciona el Día del Pago Semanal</label>
+      <div class="semanal-cards-grid">
+        <div class="semanal-card selected" onclick="seleccionarMontoSemanal(150, this)">
+          <span>Lunes</span>
+          <span class="sub-monto">S/ 150.00</span>
+        </div>
+        <div class="semanal-card" onclick="seleccionarMontoSemanal(100, this)">
+          <span>Jueves</span>
+          <span class="sub-monto">S/ 100.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Meses -->
+    <div class="form-group">
+      <label class="form-label-title">2. Selecciona el Mes</label>
+      <div id="gridMeses" class="months-cards-grid"></div>
+      <input type="hidden" id="mesInput" required>
+    </div>
+
+    <!-- 3. Confirmación de Monto & Teclado Táctil -->
+    <div class="form-group">
+      <label class="form-label-title">3. Monto a Procesar</label>
+      
+      <!-- Visualizador Principal -->
+      <div id="displayMontoCard" class="monto-card-display">
+        <div class="monto-badge">
+          <span class="monto-label">Total a Procesar</span>
+          <h2 id="displayMontoText">S/ 0.00</h2>
+        </div>
+      </div>
+
+      <!-- Teclado Numérico Estilo Banca Móvil (Gastos Adicionales) -->
+      <div id="wrapperKeypad" class="keypad-wrapper" style="display: none;">
+        <div class="numpad-grid">
+          <button type="button" class="num-btn" onclick="pressNumpad('1')">1</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('2')">2</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('3')">3</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('4')">4</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('5')">5</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('6')">6</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('7')">7</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('8')">8</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('9')">9</button>
+          <button type="button" class="num-btn action" onclick="pressNumpad('.')">.</button>
+          <button type="button" class="num-btn" onclick="pressNumpad('0')">0</button>
+          <button type="button" class="num-btn action" onclick="pressNumpad('back')"><i class="ph-bold ph-backspace"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Estado del Movimiento -->
+    <div class="form-group">
+      <label class="form-label-title">4. Estado del Movimiento</label>
+      <div class="type-selector">
+        <label class="type-option">
+          <input type="radio" name="tipoOperacion" value="PAGO_GASTO" checked>
+          <span><i class="ph-bold ph-check-circle"></i> Pago Realizado (Por mí)</span>
+        </label>
+        <label class="type-option">
+          <input type="radio" name="tipoOperacion" value="DEPOSITO_RECIBIDO">
+          <span><i class="ph-bold ph-arrow-down-left"></i> Depositado hacia Mí</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 5. Comprobante Obligatorio -->
+    <div class="form-group">
+      <label class="form-label-title">5. Comprobante / Recibo (Obligatorio)</label>
+      <div class="file-upload-wrapper">
+        <input type="file" id="comprobanteDirectoInput" accept="image/*" class="file-input-hidden" required>
+        <label for="comprobanteDirectoInput" class="file-upload-box">
+          <i class="ph-bold ph-upload-simple"></i>
+          <span id="fileNameLabel">Adjuntar captura obligatoria</span>
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      <i class="ph-bold ph-floppy-disk"></i> Registrar Movimiento
+    </button>
+  </form>
+</div>
