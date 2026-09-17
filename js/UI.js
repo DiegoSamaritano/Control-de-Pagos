@@ -44,12 +44,12 @@ function cambiarSeccion(seccion, event) {
   if (seccion === 'dashboard') {
     secDashboard.style.display = 'block';
     secHistorial.style.display = 'none';
-    topbarTitle.innerText = 'Balance & Registro';
+    topbarTitle.innerText = 'Nuevo Registro de Pago o Depósito';
     topbarSubtitle.innerText = 'Control de servicios, universidad y depósitos compartidos.';
   } else if (seccion === 'boletas') {
     secDashboard.style.display = 'none';
     secHistorial.style.display = 'block';
-    topbarTitle.innerText = 'Boletas & Recibos de Servicios';
+    topbarTitle.innerText = 'Boletas & Recibos de los Servicios Pagados';
     topbarSubtitle.innerText = 'Historial estructurado y desplegable por categoría y mes.';
     filtrarMovimientos('PAGO_GASTO');
   } else if (seccion === 'depositos') {
