@@ -37,26 +37,34 @@ function cambiarSeccion(seccion, event) {
   document.getElementById(`nav-${seccion}`).classList.add('active');
 
   const secDashboard = document.getElementById('sec-dashboard');
+  const secBalance = document.getElementById('sec-balance');
   const secHistorial = document.getElementById('sec-historial');
+  
   const topbarTitle = document.getElementById('topbarTitle');
   const topbarSubtitle = document.getElementById('topbarSubtitle');
 
+  // Ocultar todas las secciones primero
+  secDashboard.style.display = 'none';
+  secBalance.style.display = 'none';
+  secHistorial.style.display = 'none';
+
   if (seccion === 'dashboard') {
     secDashboard.style.display = 'block';
-    secHistorial.style.display = 'none';
-    topbarTitle.innerText = 'Nuevo Registro de Pago o Depósito';
-    topbarSubtitle.innerText = 'Control de servicios, universidad y depósitos compartidos.';
+    topbarTitle.innerText = 'Nuevo Pago / Depósito';
+    topbarSubtitle.innerText = 'Sube aquí el comprobante y completa los datos de la operación.';
+  } else if (seccion === 'balance') {
+    secBalance.style.display = 'block';
+    topbarTitle.innerText = 'Balance General';
+    topbarSubtitle.innerText = 'Estado neto de la cuenta, ingresos totales acumulados y gastos registrados.';
   } else if (seccion === 'boletas') {
-    secDashboard.style.display = 'none';
     secHistorial.style.display = 'block';
-    topbarTitle.innerText = 'Boletas & Recibos de los Servicios Pagados';
-    topbarSubtitle.innerText = 'Historial estructurado y desplegable por categoría y mes.';
+    topbarTitle.innerText = 'Historial de Recibos';
+    topbarSubtitle.innerText = 'Consulta los pagos de servicios y universidad con sus capturas.';
     filtrarMovimientos('PAGO_GASTO');
   } else if (seccion === 'depositos') {
-    secDashboard.style.display = 'none';
     secHistorial.style.display = 'block';
-    topbarTitle.innerText = 'Depósitos Recibidos';
-    topbarSubtitle.innerText = 'Historial estructurado de transferencias y abonos recibidos.';
+    topbarTitle.innerText = 'Historial de Depósitos';
+    topbarSubtitle.innerText = 'Consulta las transferencias y abonados recibidos.';
     filtrarMovimientos('DEPOSITO_RECIBIDO');
   }
 }

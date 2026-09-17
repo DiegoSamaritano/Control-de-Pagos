@@ -23,17 +23,22 @@
 
   <div class="app-container">
     
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar / Topbar Navigation en Móvil -->
     <aside class="sidebar">
       <div class="brand">
         <i class="ph-bold ph-wallet brand-icon"></i>
         <h2>FinanzApp</h2>
       </div>
 
+      <!-- Menú estilo botones móviles de pestañas -->
       <nav class="nav-menu">
         <a href="#" id="nav-dashboard" class="nav-item active" onclick="cambiarSeccion('dashboard', event)">
-          <i class="ph-bold ph-squares-four"></i>
-          <span>Realizar Pago</span>
+          <i class="ph-bold ph-plus-circle"></i>
+          <span>Nuevo</span>
+        </a>
+        <a href="#" id="nav-balance" class="nav-item" onclick="cambiarSeccion('balance', event)">
+          <i class="ph-bold ph-chart-pie-slice"></i>
+          <span>Balance</span>
         </a>
         <a href="#" id="nav-boletas" class="nav-item" onclick="cambiarSeccion('boletas', event)">
           <i class="ph-bold ph-receipt"></i>
@@ -61,52 +66,19 @@
       
       <header class="topbar">
         <div>
-          <h1 id="topbarTitle" class="page-title">Balance & Registro</h1>
-          <p id="topbarSubtitle" class="page-subtitle">Control de servicios, universidad y depósitos compartidos.</p>
+          <h1 id="topbarTitle" class="page-title">Nuevo Pago / Depósito</h1>
+          <p id="topbarSubtitle" class="page-subtitle">Sube aquí el comprobante y completa los datos de la operación.</p>
         </div>
         <div class="status-indicator">
           <span class="dot"></span> Supabase Conectado
         </div>
       </header>
 
-      <!-- Stats Grid -->
-      <section class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon income">
-            <i class="ph-bold ph-arrow-down-left"></i>
-          </div>
-          <div class="stat-details">
-            <span class="stat-label">Total Depositado</span>
-            <h3 id="totalDepositado" class="stat-value text-emerald">S/ 0.00</h3>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon expense">
-            <i class="ph-bold ph-arrow-up-right"></i>
-          </div>
-          <div class="stat-details">
-            <span class="stat-label">Total Pagado</span>
-            <h3 id="totalPagado" class="stat-value text-rose">S/ 0.00</h3>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon balance">
-            <i class="ph-bold ph-scales"></i>
-          </div>
-          <div class="stat-details">
-            <span class="stat-label">Saldo Disponible</span>
-            <h3 id="saldoDisponible" class="stat-value text-blue">S/ 0.00</h3>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECCIÓN 1: DASHBOARD -->
+      <!-- SECCIÓN 1: NUEVO REGISTRO -->
       <section id="sec-dashboard" class="tab-content active">
         <div class="panel-card form-panel-full">
           <div class="panel-header">
-            <h3><i class="ph-bold ph-plus-circle"></i> Nuevo Registro</h3>
+            <h3><i class="ph-bold ph-plus-circle"></i> Registrar Operación</h3>
           </div>
           
           <form id="formTransaccion" class="custom-form">
@@ -116,7 +88,7 @@
               <div class="hero-box-header">
                 <span class="hero-badge"><i class="ph-bold ph-cursor-click"></i> PASO 1 REQUERIDO</span>
                 <h2 class="hero-title">¿Qué operación deseas realizar?</h2>
-                <p class="hero-desc">Selecciona una opción para mostrar el pago o depósito que se realizara.</p>
+                <p class="hero-desc">Selecciona una opción para desplegar las categorías correspondientes.</p>
               </div>
 
               <div class="type-selector-hero">
@@ -127,8 +99,8 @@
                       <i class="ph-bold ph-arrow-down-left"></i>
                     </div>
                     <div class="hero-card-text">
-                      <span class="hero-card-title">Realizar Depósito</span>
-                      <span class="hero-card-sub">Deposito para el Estudiante</span>
+                      <span class="hero-card-title">Hacer Depósito</span>
+                      <span class="hero-card-sub">Abono o transferencia recibida</span>
                     </div>
                     <i class="ph-bold ph-check-circle check-selected-icon"></i>
                   </div>
@@ -141,7 +113,7 @@
                       <i class="ph-bold ph-check-circle"></i>
                     </div>
                     <div class="hero-card-text">
-                      <span class="hero-card-title">Realizar Pago</span>
+                      <span class="hero-card-title">Hacer Pago</span>
                       <span class="hero-card-sub">Pago de servicio, universidad u otros</span>
                     </div>
                     <i class="ph-bold ph-check-circle check-selected-icon"></i>
@@ -248,7 +220,143 @@
         </div>
       </section>
 
-      <!-- SECCIÓN 2: HISTORIAL POR CATEGORÍAS -->
+      <!-- SECCIÓN 2: BALANCE FINANCIERO PROFESIONAL -->
+      <!-- SECCIÓN 2: BALANCE & DESGLOSE DE GASTOS -->
+      <section id="sec-balance" class="tab-content" style="display: none;">
+        <div class="balance-app-card">
+          
+          <!-- Selector de Mes / Filtro de Historial -->
+          <div class="balance-filter-bar">
+            <label class="filter-label"><i class="ph-bold ph-calendar-blank"></i> Periodo de Consulta:</label>
+            <select id="selectBalanceMes" class="form-input select-period" onchange="actualizarBalancePorMes(this.value)">
+              <option value="TODOS" selected>-- Historial General Acumulado --</option>
+              <option value="Septiembre">Septiembre 2026</option>
+              <option value="Agosto">Agosto 2026</option>
+              <option value="Julio">Julio 2026</option>
+              <option value="Junio">Junio 2026</option>
+              <option value="Mayo">Mayo 2026</option>
+            </select>
+          </div>
+
+          <!-- TARJETA PRINCIPAL DE SALDO & EJECUCIÓN -->
+          <div class="balance-hero-card">
+            <div class="hero-top-info">
+              <div>
+                <span class="hero-sub-label">Fondo Restante / Saldo a Favor</span>
+                <h1 id="saldoDisponible" class="hero-main-amount">S/ 0.00</h1>
+              </div>
+              <div class="health-badge positive" id="badgeEstadoCuenta">
+                <i class="ph-bold ph-shield-check"></i> Estado al Día
+              </div>
+            </div>
+
+            <!-- Resumen numérico rápido -->
+            <div class="hero-totals-row">
+              <div class="hero-total-item">
+                <span class="lbl-mini">Total Depósitos Recibidos:</span>
+                <strong id="totalDepositado" class="text-emerald">S/ 0.00</strong>
+              </div>
+              <div class="hero-total-item">
+                <span class="lbl-mini">Total Pagos Realizados:</span>
+                <strong id="totalPagado" class="text-rose">S/ 0.00</strong>
+              </div>
+            </div>
+
+            <!-- Barra de Consumo de Fondo -->
+            <div class="progress-bar-wrapper">
+              <div class="progress-info">
+                <span>Porcentaje del Fondo Utilizado</span>
+                <span id="porcentajeConsumoText">0% consumido</span>
+              </div>
+              <div class="progress-track">
+                <div id="progressBarFill" class="progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DESGLOSE DETALLADO POR SERVICIOS / CATEGORÍAS -->
+          <div class="balance-kpi-container">
+            <h4 class="kpi-section-title"><i class="ph-bold ph-chart-pie"></i> Desglose Acumulado por Servicios</h4>
+            
+            <div class="services-breakdown-grid">
+              
+              <!-- Card Universidad -->
+              <div class="service-card">
+                <div class="service-card-header">
+                  <div class="service-icon uni">
+                    <i class="ph-bold ph-graduation-cap"></i>
+                  </div>
+                  <div class="service-titles">
+                    <h4>Universidad</h4>
+                    <span id="subCountUni" class="service-sub">0 pagos registrados</span>
+                  </div>
+                </div>
+                <h3 id="montoUni" class="service-amount">S/ 0.00</h3>
+              </div>
+
+              <!-- Card Alquiler de Cuarto -->
+              <div class="service-card">
+                <div class="service-card-header">
+                  <div class="service-icon room">
+                    <i class="ph-bold ph-house-line"></i>
+                  </div>
+                  <div class="service-titles">
+                    <h4>Alquiler de Cuarto</h4>
+                    <span id="subCountAlquiler" class="service-sub">0 pagos registrados</span>
+                  </div>
+                </div>
+                <h3 id="montoAlquiler" class="service-amount">S/ 0.00</h3>
+              </div>
+
+              <!-- Card Internet -->
+              <div class="service-card">
+                <div class="service-card-header">
+                  <div class="service-icon net">
+                    <i class="ph-bold ph-wifi-high"></i>
+                  </div>
+                  <div class="service-titles">
+                    <h4>Servicio Internet</h4>
+                    <span id="subCountInternet" class="service-sub">0 pagos registrados</span>
+                  </div>
+                </div>
+                <h3 id="montoInternet" class="service-amount">S/ 0.00</h3>
+              </div>
+
+              <!-- Card Manutención / Transferencias Semanales -->
+              <div class="service-card">
+                <div class="service-card-header">
+                  <div class="service-icon weekly">
+                    <i class="ph-bold ph-hand-coins"></i>
+                  </div>
+                  <div class="service-titles">
+                    <h4>Cuotas Semanales</h4>
+                    <span id="subCountSemanal" class="service-sub">0 abonados registrados</span>
+                  </div>
+                </div>
+                <h3 id="montoSemanal" class="service-amount">S/ 0.00</h3>
+              </div>
+
+              <!-- Card Gastos Adicionales / Varios -->
+              <div class="service-card">
+                <div class="service-card-header">
+                  <div class="service-icon extra">
+                    <i class="ph-bold ph-receipt"></i>
+                  </div>
+                  <div class="service-titles">
+                    <h4>Gastos Adicionales</h4>
+                    <span id="subCountAdicionales" class="service-sub">0 gastos registrados</span>
+                  </div>
+                </div>
+                <h3 id="montoAdicionales" class="service-amount">S/ 0.00</h3>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: HISTORIAL POR CATEGORÍAS -->
       <section id="sec-historial" class="tab-content" style="display: none;">
         <div class="panel-card list-panel-full">
           <div class="panel-header-flex">
