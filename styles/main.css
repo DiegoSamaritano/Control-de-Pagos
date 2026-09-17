@@ -945,3 +945,64 @@ body {
     gap: 8px;
   }
 }
+/* Estilos para Tarjetas Clicables con Desplegable de Meses en Balance */
+.clickable-card {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-wrap: wrap;
+}
+
+.clickable-card:hover {
+  border-color: var(--primary);
+  background-color: #1a2332;
+}
+
+.service-right-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.expand-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.clickable-card:hover .expand-hint {
+  color: var(--primary);
+}
+
+.balance-months-dropdown {
+  width: 100%;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.month-row-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-surface);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.month-row-item .m-name {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.month-row-item .m-val {
+  color: var(--text-main);
+  font-weight: 700;
+}

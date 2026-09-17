@@ -220,8 +220,7 @@
         </div>
       </section>
 
-      <!-- SECCIÓN 2: BALANCE FINANCIERO PROFESIONAL -->
-      <!-- SECCIÓN 2: BALANCE & DESGLOSE DE GASTOS -->
+      <!-- SECCIÓN 2: BALANCE GENERAL & DESGLOSE DE GASTOS Y DEPÓSITOS -->
       <section id="sec-balance" class="tab-content" style="display: none;">
         <div class="balance-app-card">
           
@@ -274,14 +273,59 @@
             </div>
           </div>
 
-          <!-- DESGLOSE DETALLADO POR SERVICIOS / CATEGORÍAS -->
+          <!-- 1. DESGLOSE DETALLADO DE DEPÓSITOS / ABONOS RECIBIDOS -->
           <div class="balance-kpi-container">
-            <h4 class="kpi-section-title"><i class="ph-bold ph-chart-pie"></i> Desglose Acumulado por Servicios</h4>
+          <h4 class="kpi-section-title text-emerald"><i class="ph-bold ph-arrow-down-left"></i>  Depósitos & Abonos Recibidos </h4>
+            
+            <div class="services-breakdown-grid">
+              
+              <!-- Card Depósitos Semanales -->
+              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-dep-semanal')">
+                <div class="service-card-header">
+                  <div class="service-icon weekly">
+                    <i class="ph-bold ph-hand-coins"></i>
+                  </div>
+                  <div class="service-titles">
+                    <h4>Depósitos Semanales</h4>
+                    <span id="subCountDepSemanal" class="service-sub">0 abonos recibidos</span>
+                  </div>
+                </div>
+                <div class="service-right-side">
+                  <h3 id="montoDepSemanal" class="service-amount text-emerald">S/ 0.00</h3>
+                  <span class="expand-hint">Ver meses <i class="ph-bold ph-caret-down"></i></span>
+                </div>
+                <div id="months-dep-semanal" class="balance-months-dropdown" style="display: none;"></div>
+              </div>
+
+              <!-- Card Depósitos Directos / Universidad / Servicios -->
+              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-dep-directos')">
+                <div class="service-card-header">
+                  <div class="service-icon uni">
+                    <i class="ph-bold ph-bank"></i>
+                  </div>
+                  <div class="service-titles">
+                    <h4>Depósitos para Servicios / Uni</h4>
+                    <span id="subCountDepDirectos" class="service-sub">0 abonos recibidos</span>
+                  </div>
+                </div>
+                <div class="service-right-side">
+                  <h3 id="montoDepDirectos" class="service-amount text-emerald">S/ 0.00</h3>
+                  <span class="expand-hint">Ver meses <i class="ph-bold ph-caret-down"></i></span>
+                </div>
+                <div id="months-dep-directos" class="balance-months-dropdown" style="display: none;"></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 2. DESGLOSE DETALLADO DE PAGOS REALIZADOS -->
+          <div class="balance-kpi-container">
+            <h4 class="kpi-section-title text-rose"><i class="ph-bold ph-arrow-up-right"></i>  Pagos a Servicios Realizados</h4>
             
             <div class="services-breakdown-grid">
               
               <!-- Card Universidad -->
-              <div class="service-card">
+              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-uni')">
                 <div class="service-card-header">
                   <div class="service-icon uni">
                     <i class="ph-bold ph-graduation-cap"></i>
@@ -291,11 +335,15 @@
                     <span id="subCountUni" class="service-sub">0 pagos registrados</span>
                   </div>
                 </div>
-                <h3 id="montoUni" class="service-amount">S/ 0.00</h3>
+                <div class="service-right-side">
+                  <h3 id="montoUni" class="service-amount">S/ 0.00</h3>
+                  <span class="expand-hint">Ver meses <i class="ph-bold ph-caret-down"></i></span>
+                </div>
+                <div id="months-pago-uni" class="balance-months-dropdown" style="display: none;"></div>
               </div>
 
               <!-- Card Alquiler de Cuarto -->
-              <div class="service-card">
+              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-alquiler')">
                 <div class="service-card-header">
                   <div class="service-icon room">
                     <i class="ph-bold ph-house-line"></i>
@@ -305,11 +353,15 @@
                     <span id="subCountAlquiler" class="service-sub">0 pagos registrados</span>
                   </div>
                 </div>
-                <h3 id="montoAlquiler" class="service-amount">S/ 0.00</h3>
+                <div class="service-right-side">
+                  <h3 id="montoAlquiler" class="service-amount">S/ 0.00</h3>
+                  <span class="expand-hint">Ver meses <i class="ph-bold ph-caret-down"></i></span>
+                </div>
+                <div id="months-pago-alquiler" class="balance-months-dropdown" style="display: none;"></div>
               </div>
 
               <!-- Card Internet -->
-              <div class="service-card">
+              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-net')">
                 <div class="service-card-header">
                   <div class="service-icon net">
                     <i class="ph-bold ph-wifi-high"></i>
@@ -319,25 +371,33 @@
                     <span id="subCountInternet" class="service-sub">0 pagos registrados</span>
                   </div>
                 </div>
-                <h3 id="montoInternet" class="service-amount">S/ 0.00</h3>
+                <div class="service-right-side">
+                  <h3 id="montoInternet" class="service-amount">S/ 0.00</h3>
+                  <span class="expand-hint">Ver meses <i class="ph-bold ph-caret-down"></i></span>
+                </div>
+                <div id="months-pago-net" class="balance-months-dropdown" style="display: none;"></div>
               </div>
 
-              <!-- Card Manutención / Transferencias Semanales -->
-              <div class="service-card">
+              <!-- Card Cuotas Semanales / Manutención -->
+              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-semanal')">
                 <div class="service-card-header">
                   <div class="service-icon weekly">
                     <i class="ph-bold ph-hand-coins"></i>
                   </div>
                   <div class="service-titles">
                     <h4>Cuotas Semanales</h4>
-                    <span id="subCountSemanal" class="service-sub">0 abonados registrados</span>
+                    <span id="subCountSemanal" class="service-sub">0 pagos registrados</span>
                   </div>
                 </div>
-                <h3 id="montoSemanal" class="service-amount">S/ 0.00</h3>
+                <div class="service-right-side">
+                  <h3 id="montoSemanal" class="service-amount">S/ 0.00</h3>
+                  <span class="expand-hint">Ver meses <i class="ph-bold ph-caret-down"></i></span>
+                </div>
+                <div id="months-pago-semanal" class="balance-months-dropdown" style="display: none;"></div>
               </div>
 
-              <!-- Card Gastos Adicionales / Varios -->
-              <div class="service-card">
+              <!-- Card Gastos Adicionales -->
+              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-extra')">
                 <div class="service-card-header">
                   <div class="service-icon extra">
                     <i class="ph-bold ph-receipt"></i>
@@ -347,7 +407,11 @@
                     <span id="subCountAdicionales" class="service-sub">0 gastos registrados</span>
                   </div>
                 </div>
-                <h3 id="montoAdicionales" class="service-amount">S/ 0.00</h3>
+                <div class="service-right-side">
+                  <h3 id="montoAdicionales" class="service-amount">S/ 0.00</h3>
+                  <span class="expand-hint">Ver meses <i class="ph-bold ph-caret-down"></i></span>
+                </div>
+                <div id="months-pago-extra" class="balance-months-dropdown" style="display: none;"></div>
               </div>
 
             </div>
