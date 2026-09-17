@@ -19,7 +19,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <link rel="stylesheet" href="styles/main.css?v=8">
+  <link rel="stylesheet" href="styles/main.css?v=5">
 </head>
 <body>
 
@@ -72,7 +72,7 @@
             </div>
           </div>
 
-          <!-- MINI POLLITO COMPAÑERO (SE ACTIVA AL SELECCIONAR TIPO DE PAGO) -->
+          <!-- MINI POLLITO COMPAÑERO -->
           <div id="wrapperMiniPollito" class="chicken-mini-companion" style="display: none;">
             <div class="chicken-mini-avatar">
               <img src="assets/pollito-assistant.png" alt="Asistente Pollito" class="chicken-img-mini">
@@ -82,7 +82,7 @@
             </div>
           </div>
 
-          <!-- PASO 1: SELECCIÓN PRINCIPAL DE TARJETAS 3D (MÁS GRANDES Y LLAMATIVAS) -->
+          <!-- PASO 1: SELECCIÓN PRINCIPAL DE TARJETAS 3D -->
           <div class="step-card-container hero-action-screen">
             <div class="step-header text-center">
               <h2 class="step-title-main center-title">¿Qué tipo de pago deseas registrar?</h2>
@@ -402,6 +402,12 @@
     <img id="imageViewerTarget" class="image-viewer-content" src="" alt="Comprobante Ampliado">
   </div>
 
+  <!-- OVERLAY DE TRANSICIÓN CON EL POLLITO -->
+  <div id="chickenTransitionOverlay">
+    <img src="assets/pollito-assistant.png" alt="Pollito Transición" class="transition-chicken-img">
+    <span class="transition-text">¡Preparando tu registro... 🐥!</span>
+  </div>
+
   <!-- SCRIPTS -->
   <script src="js/supabaseClient.js"></script>
   <script src="js/UI.js"></script>
@@ -419,10 +425,5 @@
       }, 800);
     });
   </script>
-  <!-- OVERLAY DE TRANSICIÓN CON EL POLLITO -->
-  <div id="chickenTransitionOverlay">
-    <img src="assets/pollito-assistant.png" alt="Pollito Transición" class="transition-chicken-img">
-    <span class="transition-text">¡Preparando tu registro... 🐥!</span>
-  </div>
 </body>
 </html>
