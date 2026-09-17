@@ -30,18 +30,11 @@ function filtrarMovimientos(tipo) {
     if (titulo) titulo.innerHTML = `<i class="ph-bold ph-list-checks"></i> Historial por Categorías`;
     renderizarListaTransacciones(listaGlobalTransacciones);
   } else if (tipo === 'PAGO_GASTO') {
-    if (titulo) titulo.innerHTML = `<i class="ph-bold ph-receipt"></i> Boletas y Recibos por Categoría`;
+    if (titulo) titulo.innerHTML = `<i class="ph-bold ph-receipt"></i> Recibos de Pagos`;
     renderizarListaTransacciones(listaGlobalTransacciones.filter(t => t.tipo_operacion === 'PAGO_GASTO'));
   } else if (tipo === 'DEPOSITO_RECIBIDO') {
-    if (titulo) titulo.innerHTML = `<i class="ph-bold ph-arrows-down-up"></i> Depósitos Recibidos por Categoría`;
+    if (titulo) titulo.innerHTML = `<i class="ph-bold ph-arrows-down-up"></i> Depósitos Recibidos`;
     renderizarListaTransacciones(listaGlobalTransacciones.filter(t => t.tipo_operacion === 'DEPOSITO_RECIBIDO'));
-  }
-}
-
-function toggleDetalleMesesBalance(idContenedor) {
-  const contenedor = document.getElementById(idContenedor);
-  if (contenedor) {
-    contenedor.style.display = (contenedor.style.display === 'none' || contenedor.style.display === '') ? 'flex' : 'none';
   }
 }
 
@@ -60,7 +53,6 @@ function actualizarBalancePorMes(mesFiltro) {
   const desgloses = {
     depSemanal: { monto: 0, count: 0, meses: {} },
     depDirectos: { monto: 0, count: 0, meses: {} },
-
     uni: { monto: 0, count: 0, meses: {} },
     alquiler: { monto: 0, count: 0, meses: {} },
     internet: { monto: 0, count: 0, meses: {} },
@@ -130,13 +122,13 @@ function actualizarBalancePorMes(mesFiltro) {
   const txtPorcentaje = document.getElementById('porcentajeConsumoText');
   
   if (barFill) barFill.style.width = `${porcentaje}%`;
-  if (txtPorcentaje) txtPorcentaje.innerText = `${porcentaje}% gastado del fondo`;
+  if (txtPorcentaje) txtPorcentaje.innerText = `${porcentaje}% gastado`;
 
   const badge = document.getElementById('badgeEstadoCuenta');
   if (badge) {
     if (saldoNeto >= 0) {
       badge.className = 'health-badge positive';
-      badge.innerHTML = `<i class="ph-bold ph-shield-check"></i> Estado al Día`;
+      badge.innerHTML = `<i class="ph-bold ph-shield-check"></i> Balance al Día`;
     } else {
       badge.className = 'health-badge negative';
       badge.innerHTML = `<i class="ph-bold ph-warning"></i> Saldo Negativo`;
@@ -154,7 +146,7 @@ function actualizarBalancePorMes(mesFiltro) {
     if (elDrop) {
       const llavesMeses = Object.keys(dataObj.meses);
       if (llavesMeses.length === 0) {
-        elDrop.innerHTML = `<span style="font-size:10px; color:var(--text-muted); padding:4px;">Sin registros en este filtro</span>`;
+        elDrop.innerHTML = `<span style="font-size:10px; color:var(--text-muted); padding:4px;">Sin registros en este periodo</span>`;
       } else {
         elDrop.innerHTML = llavesMeses.map(m => `
           <div class="month-row-item">
@@ -166,16 +158,17 @@ function actualizarBalancePorMes(mesFiltro) {
     }
   };
 
-  renderCardData('montoDepSemanal', 'subCountDepSemanal', 'months-dep-semanal', desgloses.depSemanal, 'abonos recibidos');
-  renderCardData('montoDepDirectos', 'subCountDepDirectos', 'months-dep-directos', desgloses.depDirectos, 'abonos recibidos');
+  renderCardData('montoDepSemanal', 'subCountDepSemanal', 'months-dep-semanal', desgloses.depSemanal, 'abonos');
+  renderCardData('montoDepDirectos', 'subCountDepDirectos', 'months-dep-directos', desgloses.depDirectos, 'abonos');
 
-  renderCardData('montoUni', 'subCountUni', 'months-pago-uni', desgloses.uni, 'pagos registrados');
-  renderCardData('montoAlquiler', 'subCountAlquiler', 'months-pago-alquiler', desgloses.alquiler, 'pagos registrados');
-  renderCardData('montoInternet', 'subCountInternet', 'months-pago-net', desgloses.internet, 'pagos registrados');
-  renderCardData('montoSemanal', 'subCountSemanal', 'months-pago-semanal', desgloses.semanal, 'pagos registrados');
-  renderCardData('montoAdicionales', 'subCountAdicionales', 'months-pago-extra', desgloses.adicionales, 'gastos adicionales');
+  renderCardData('montoUni', 'subCountUni', 'months-pago-uni', desgloses.uni, 'pagos');
+  renderCardData('montoAlquiler', 'subCountAlquiler', 'months-pago-alquiler', desgloses.alquiler, 'pagos');
+  renderCardData('montoInternet', 'subCountInternet', 'months-pago-net', desgloses.internet, 'pagos');
+  renderCardData('montoSemanal', 'subCountSemanal', 'months-pago-semanal', desgloses.semanal, 'pagos');
+  renderCardData('montoAdicionales', 'subCountAdicionales', 'months-pago-extra', desgloses.adicionales, 'gastos');
 }
 
+// Guardar comprobantes con organización en Storage por Año/Mes para escalar
 async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_operacion, archivosComprobantes) {
   if (!categoria_id) {
     Swal.fire({ icon: 'warning', title: 'Categoría Faltante', text: 'Por favor, selecciona una categoría.', confirmButtonColor: '#10b981' });
@@ -189,41 +182,46 @@ async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_opera
 
   const montoNum = parseFloat(monto);
   if (isNaN(montoNum) || montoNum <= 0) {
-    Swal.fire({ icon: 'warning', title: 'Monto Inválido', text: 'El importe a liquidar debe ser mayor a S/ 0.00.', confirmButtonColor: '#10b981' });
+    Swal.fire({ icon: 'warning', title: 'Monto Inválido', text: 'El importe debe ser mayor a S/ 0.00.', confirmButtonColor: '#10b981' });
     return;
   }
 
   if (!archivosComprobantes || archivosComprobantes.length === 0) {
-    Swal.fire({ icon: 'warning', title: 'Comprobante Faltante', text: 'Es obligatorio adjuntar la captura del comprobante de operación.', confirmButtonColor: '#10b981' });
+    Swal.fire({ icon: 'warning', title: 'Comprobante Faltante', text: 'Es obligatorio adjuntar la captura del comprobante.', confirmButtonColor: '#10b981' });
     return;
   }
 
   Swal.fire({ 
     title: 'Guardando registro...', 
-    text: 'Subiendo comprobante a Supabase', 
+    text: 'Subiendo comprobante a Supabase Storage', 
     allowOutsideClick: false, 
     didOpen: () => { Swal.showLoading(); } 
   });
+
+  const fechaActual = new Date();
+  const year = fechaActual.getFullYear();
+  const month = String(fechaActual.getMonth() + 1).padStart(2, '0');
 
   const urlsSubidas = [];
 
   for (let i = 0; i < archivosComprobantes.length; i++) {
     const file = archivosComprobantes[i];
     const fileExt = file.name.split('.').pop();
-    const fileName = `voucher_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+    // Estructura limpia: YYYY/MM/voucher_timestamp.ext
+    const filePath = `${year}/${month}/voucher_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
 
     const { error: uploadError } = await _supabase.storage
       .from('comprobantes')
-      .upload(fileName, file);
+      .upload(filePath, file);
 
     if (uploadError) {
-      Swal.fire('Error de Almacenamiento', `No se pudo subir la captura #${i + 1}: ` + uploadError.message, 'error');
+      Swal.fire('Error de Almacenamiento', `No se pudo subir la captura: ` + uploadError.message, 'error');
       return;
     }
 
     const { data: urlData } = _supabase.storage
       .from('comprobantes')
-      .getPublicUrl(fileName);
+      .getPublicUrl(filePath);
 
     urlsSubidas.push(urlData.publicUrl);
   }
@@ -248,7 +246,7 @@ async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_opera
   Swal.fire({ 
     icon: 'success', 
     title: '¡Operación Guardada!', 
-    text: `Se registró correctamente la operación de ${concepto}.`, 
+    text: `Se registró correctamente el movimiento de ${concepto}.`, 
     confirmButtonColor: '#10b981', 
     timer: 2000 
   });

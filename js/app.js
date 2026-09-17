@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const files = e.target.files;
 
       if (files.length > 0) {
-        label.innerText = `${files.length} captura(s) lista(s) para subir`;
+        label.innerText = `${files.length} captura(s) seleccionada(s)`;
       } else {
-        label.innerText = 'Haz clic aquí para seleccionar la captura';
+        label.innerText = 'Seleccionar voucher o tomar foto';
       }
     });
   }
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const radioSeleccionado = document.querySelector('input[name="tipoOperacion"]:checked');
       if (!radioSeleccionado) {
-        Swal.fire({ icon: 'warning', title: 'Selección Requerida', text: 'Por favor, selecciona primero la naturaleza de la operación en el Paso 1.', confirmButtonColor: '#10b981' });
+        Swal.fire({ icon: 'warning', title: 'Selección Requerida', text: 'Por favor, selecciona si es Pago o Depósito en el Paso 1.', confirmButtonColor: '#10b981' });
         return;
       }
 
@@ -29,22 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const mes = document.getElementById('mesInput').value;
       const monto = document.getElementById('montoInput').value;
       const tipo_operacion = radioSeleccionado.value;
-      const fileInput = document.getElementById('comprobanteDirectoInput');
-      const archivos = fileInput ? Array.from(fileInput.files) : [];
+      const filesArr = fileInput ? Array.from(fileInput.files) : [];
 
       const concepto = `${mes}`;
 
-      await guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_operacion, archivos);
+      await guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_operacion, filesArr);
 
       if (fileInput) fileInput.value = '';
       const label = document.getElementById('fileNameLabel');
-      if (label) label.innerText = 'Haz clic aquí para seleccionar la captura';
+      if (label) label.innerText = 'Seleccionar voucher o tomar foto';
 
-      // Restablece el formulario sin bloquear futuros ingresos
       resetearFormularioAInicial();
     });
   }
 
+  // Cargar datos iniciales
   obtenerCategorias();
   obtenerTransacciones();
 });
