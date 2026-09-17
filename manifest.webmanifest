@@ -1,11 +1,11 @@
 {
-  "name": "FinanzApp - Control de Pagos",
+  "name": "FinanzApp - Control Financiero",
   "short_name": "FinanzApp",
-  "description": "Sistema de gestión financiera personal, control de depósitos, pagos y comprobantes.",
+  "description": "Sistema de gestión financiera personal y control de comprobantes.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0b0f17",
-  "theme_color": "#0b0f17",
+  "background_color": "#ffffff",
+  "theme_color": "#1e293b",
   "orientation": "portrait-primary",
   "icons": [
     {

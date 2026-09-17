@@ -20,22 +20,6 @@ async function obtenerTransacciones() {
   const mesActual = selectMes ? selectMes.value : 'TODOS';
   
   actualizarBalancePorMes(mesActual);
-  renderizarListaTransacciones(transacciones);
-}
-
-function filtrarMovimientos(tipo) {
-  const titulo = document.getElementById('tituloLista');
-
-  if (tipo === 'TODOS') {
-    if (titulo) titulo.innerHTML = `<i class="ph-bold ph-list-checks"></i> Historial por Categorías`;
-    renderizarListaTransacciones(listaGlobalTransacciones);
-  } else if (tipo === 'PAGO_GASTO') {
-    if (titulo) titulo.innerHTML = `<i class="ph-bold ph-receipt"></i> Recibos de Pagos`;
-    renderizarListaTransacciones(listaGlobalTransacciones.filter(t => t.tipo_operacion === 'PAGO_GASTO'));
-  } else if (tipo === 'DEPOSITO_RECIBIDO') {
-    if (titulo) titulo.innerHTML = `<i class="ph-bold ph-arrows-down-up"></i> Depósitos Recibidos`;
-    renderizarListaTransacciones(listaGlobalTransacciones.filter(t => t.tipo_operacion === 'DEPOSITO_RECIBIDO'));
-  }
 }
 
 function actualizarBalancePorMes(mesFiltro) {
@@ -50,144 +34,114 @@ function actualizarBalancePorMes(mesFiltro) {
   let totalDepositado = 0;
   let totalPagado = 0;
 
-  const desgloses = {
-    depSemanal: { monto: 0, count: 0, meses: {} },
-    depDirectos: { monto: 0, count: 0, meses: {} },
-    uni: { monto: 0, count: 0, meses: {} },
-    alquiler: { monto: 0, count: 0, meses: {} },
-    internet: { monto: 0, count: 0, meses: {} },
-    semanal: { monto: 0, count: 0, meses: {} },
-    adicionales: { monto: 0, count: 0, meses: {} }
-  };
+  const listaDepItems = [];
+  const listaPagItems = [];
+
+  let countDep = 0;
+  let countPag = 0;
 
   filtrados.forEach(item => {
     if (item.estado === 'COMPLETADO') {
       const monto = parseFloat(item.monto);
-      const mes = item.concepto || 'General';
-      const nombreCat = item.categorias ? item.categorias.nombre.toLowerCase() : '';
-      
+      const nombreCat = item.categorias ? item.categorias.nombre : 'Varios';
+      const mesConcepto = item.concepto || 'General';
+
       if (item.tipo_operacion === 'DEPOSITO_RECIBIDO') {
         totalDepositado += monto;
-
-        if (nombreCat.includes('semanal') || nombreCat.includes('semana')) {
-          desgloses.depSemanal.monto += monto;
-          desgloses.depSemanal.count++;
-          desgloses.depSemanal.meses[mes] = (desgloses.depSemanal.meses[mes] || 0) + monto;
-        } else {
-          desgloses.depDirectos.monto += monto;
-          desgloses.depDirectos.count++;
-          desgloses.depDirectos.meses[mes] = (desgloses.depDirectos.meses[mes] || 0) + monto;
-        }
-
+        countDep++;
+        listaDepItems.push({ categoria: nombreCat, mes: mesConcepto, monto: monto });
       } else if (item.tipo_operacion === 'PAGO_GASTO') {
         totalPagado += monto;
-
-        if (nombreCat.includes('universidad')) {
-          desgloses.uni.monto += monto;
-          desgloses.uni.count++;
-          desgloses.uni.meses[mes] = (desgloses.uni.meses[mes] || 0) + monto;
-        } else if (nombreCat.includes('alquiler') || nombreCat.includes('cuarto')) {
-          desgloses.alquiler.monto += monto;
-          desgloses.alquiler.count++;
-          desgloses.alquiler.meses[mes] = (desgloses.alquiler.meses[mes] || 0) + monto;
-        } else if (nombreCat.includes('internet')) {
-          desgloses.internet.monto += monto;
-          desgloses.internet.count++;
-          desgloses.internet.meses[mes] = (desgloses.internet.meses[mes] || 0) + monto;
-        } else if (nombreCat.includes('semanal') || nombreCat.includes('semana')) {
-          desgloses.semanal.monto += monto;
-          desgloses.semanal.count++;
-          desgloses.semanal.meses[mes] = (desgloses.semanal.meses[mes] || 0) + monto;
-        } else {
-          desgloses.adicionales.monto += monto;
-          desgloses.adicionales.count++;
-          desgloses.adicionales.meses[mes] = (desgloses.adicionales.meses[mes] || 0) + monto;
-        }
+        countPag++;
+        listaPagItems.push({ categoria: nombreCat, mes: mesConcepto, monto: monto });
       }
     }
   });
 
   const saldoNeto = totalDepositado - totalPagado;
 
+  const elSal = document.getElementById('saldoDisponible');
   const elDep = document.getElementById('totalDepositado');
   const elPag = document.getElementById('totalPagado');
-  const elSal = document.getElementById('saldoDisponible');
+  const elDepBar = document.getElementById('totalDepositadoBar');
+  const elPagBar = document.getElementById('totalPagadoBar');
 
+  if (elSal) elSal.innerText = `S/ ${saldoNeto.toFixed(2)}`;
   if (elDep) elDep.innerText = `S/ ${totalDepositado.toFixed(2)}`;
   if (elPag) elPag.innerText = `S/ ${totalPagado.toFixed(2)}`;
-  if (elSal) elSal.innerText = `S/ ${saldoNeto.toFixed(2)}`;
+  if (elDepBar) elDepBar.innerText = `S/ ${totalDepositado.toFixed(2)}`;
+  if (elPagBar) elPagBar.innerText = `S/ ${totalPagado.toFixed(2)}`;
 
-  const porcentaje = totalDepositado > 0 ? Math.min(Math.round((totalPagado / totalDepositado) * 100), 100) : 0;
-  const barFill = document.getElementById('progressBarFill');
-  const txtPorcentaje = document.getElementById('porcentajeConsumoText');
-  
-  if (barFill) barFill.style.width = `${porcentaje}%`;
-  if (txtPorcentaje) txtPorcentaje.innerText = `${porcentaje}% gastado`;
+  const subDep = document.getElementById('subCountDepMain');
+  const subPag = document.getElementById('subCountPagMain');
+  if (subDep) subDep.innerText = `${countDep} abono(s) registrado(s)`;
+  if (subPag) subPag.innerText = `${countPag} pago(s) registrado(s)`;
 
-  const badge = document.getElementById('badgeEstadoCuenta');
-  if (badge) {
-    if (saldoNeto >= 0) {
-      badge.className = 'health-badge positive';
-      badge.innerHTML = `<i class="ph-bold ph-shield-check"></i> Balance al Día`;
+  const progressFill = document.getElementById('progressBarFill');
+  const porcentajeText = document.getElementById('porcentajeConsumoText');
+  if (progressFill && porcentajeText) {
+    let porcentaje = 0;
+    if (totalDepositado > 0) {
+      porcentaje = Math.min(Math.round((totalPagado / totalDepositado) * 100), 100);
+    }
+    progressFill.style.width = `${porcentaje}%`;
+    porcentajeText.innerText = `${porcentaje}% gastado del fondo`;
+  }
+
+  const gridDep = document.getElementById('gridDetalleDepositosBalance');
+  if (gridDep) {
+    if (listaDepItems.length === 0) {
+      gridDep.innerHTML = `<span style="font-size:11px; color:var(--text-muted);">Sin depósitos en este periodo</span>`;
     } else {
-      badge.className = 'health-badge negative';
-      badge.innerHTML = `<i class="ph-bold ph-warning"></i> Saldo Negativo`;
+      gridDep.innerHTML = listaDepItems.map(item => `
+        <div class="service-card-balance item-income-border">
+          <div style="display:flex; flex-direction:column;">
+            <span class="cat-name">${item.categoria}</span>
+            <span style="font-size:10px; color:var(--text-muted);">Periodo: ${item.mes}</span>
+          </div>
+          <span class="cat-amount text-emerald">S/ ${item.monto.toFixed(2)}</span>
+        </div>
+      `).join('');
     }
   }
 
-  const renderCardData = (montoId, subId, dropdownId, dataObj, labelSub) => {
-    const elMonto = document.getElementById(montoId);
-    const elSub = document.getElementById(subId);
-    const elDrop = document.getElementById(dropdownId);
-
-    if (elMonto) elMonto.innerText = `S/ ${dataObj.monto.toFixed(2)}`;
-    if (elSub) elSub.innerText = `${dataObj.count} ${labelSub}`;
-
-    if (elDrop) {
-      const llavesMeses = Object.keys(dataObj.meses);
-      if (llavesMeses.length === 0) {
-        elDrop.innerHTML = `<span style="font-size:10px; color:var(--text-muted); padding:4px;">Sin registros en este periodo</span>`;
-      } else {
-        elDrop.innerHTML = llavesMeses.map(m => `
-          <div class="month-row-item">
-            <span class="m-name">${m}</span>
-            <span class="m-val">S/ ${dataObj.meses[m].toFixed(2)}</span>
+  const gridPag = document.getElementById('gridDetallePagosBalance');
+  if (gridPag) {
+    if (listaPagItems.length === 0) {
+      gridPag.innerHTML = `<span style="font-size:11px; color:var(--text-muted);">Sin pagos en este periodo</span>`;
+    } else {
+      gridPag.innerHTML = listaPagItems.map(item => `
+        <div class="service-card-balance item-expense-border">
+          <div style="display:flex; flex-direction:column;">
+            <span class="cat-name">${item.categoria}</span>
+            <span style="font-size:10px; color:var(--text-muted);">Periodo: ${item.mes}</span>
           </div>
-        `).join('');
-      }
+          <span class="cat-amount text-rose">S/ ${item.monto.toFixed(2)}</span>
+        </div>
+      `).join('');
     }
-  };
-
-  renderCardData('montoDepSemanal', 'subCountDepSemanal', 'months-dep-semanal', desgloses.depSemanal, 'abonos');
-  renderCardData('montoDepDirectos', 'subCountDepDirectos', 'months-dep-directos', desgloses.depDirectos, 'abonos');
-
-  renderCardData('montoUni', 'subCountUni', 'months-pago-uni', desgloses.uni, 'pagos');
-  renderCardData('montoAlquiler', 'subCountAlquiler', 'months-pago-alquiler', desgloses.alquiler, 'pagos');
-  renderCardData('montoInternet', 'subCountInternet', 'months-pago-net', desgloses.internet, 'pagos');
-  renderCardData('montoSemanal', 'subCountSemanal', 'months-pago-semanal', desgloses.semanal, 'pagos');
-  renderCardData('montoAdicionales', 'subCountAdicionales', 'months-pago-extra', desgloses.adicionales, 'gastos');
+  }
 }
 
-// Guardar comprobantes con organización en Storage por Año/Mes para escalar
 async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_operacion, archivosComprobantes) {
   if (!categoria_id) {
-    Swal.fire({ icon: 'warning', title: 'Categoría Faltante', text: 'Por favor, selecciona una categoría.', confirmButtonColor: '#10b981' });
+    Swal.fire({ icon: 'warning', title: 'Categoría Faltante', text: 'Por favor, selecciona una categoría.', confirmButtonColor: '#1e293b' });
     return;
   }
 
   if (!concepto || concepto.trim() === '') {
-    Swal.fire({ icon: 'warning', title: 'Mes Faltante', text: 'Selecciona el periodo o mes correspondiente.', confirmButtonColor: '#10b981' });
+    Swal.fire({ icon: 'warning', title: 'Mes Faltante', text: 'Selecciona el periodo o mes correspondiente.', confirmButtonColor: '#1e293b' });
     return;
   }
 
   const montoNum = parseFloat(monto);
   if (isNaN(montoNum) || montoNum <= 0) {
-    Swal.fire({ icon: 'warning', title: 'Monto Inválido', text: 'El importe debe ser mayor a S/ 0.00.', confirmButtonColor: '#10b981' });
+    Swal.fire({ icon: 'warning', title: 'Monto Inválido', text: 'El importe debe ser mayor a S/ 0.00.', confirmButtonColor: '#1e293b' });
     return;
   }
 
   if (!archivosComprobantes || archivosComprobantes.length === 0) {
-    Swal.fire({ icon: 'warning', title: 'Comprobante Faltante', text: 'Es obligatorio adjuntar la captura del comprobante.', confirmButtonColor: '#10b981' });
+    Swal.fire({ icon: 'warning', title: 'Comprobante Faltante', text: 'Es obligatorio adjuntar la captura del comprobante.', confirmButtonColor: '#1e293b' });
     return;
   }
 
@@ -207,7 +161,6 @@ async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_opera
   for (let i = 0; i < archivosComprobantes.length; i++) {
     const file = archivosComprobantes[i];
     const fileExt = file.name.split('.').pop();
-    // Estructura limpia: YYYY/MM/voucher_timestamp.ext
     const filePath = `${year}/${month}/voucher_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
 
     const { error: uploadError } = await _supabase.storage
@@ -247,7 +200,7 @@ async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_opera
     icon: 'success', 
     title: '¡Operación Guardada!', 
     text: `Se registró correctamente el movimiento de ${concepto}.`, 
-    confirmButtonColor: '#10b981', 
+    confirmButtonColor: '#1e293b', 
     timer: 2000 
   });
 

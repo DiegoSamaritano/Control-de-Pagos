@@ -3,33 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>FinanzApp - Sistema de Gestión de Pagos & Balance</title>
+  <title>FinanzApp</title>
   
   <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#0b0f17">
+  <meta name="theme-color" content="#1e293b">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FinanzApp">
   
+  <!-- Fuentes e Iconografía SVG -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   
+  <!-- CDNs -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css">
 
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css?v=8">
 </head>
 <body>
 
+  <!-- PANTALLA INICIAL / SPLASH SCREEN -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-content">
+      <svg class="splash-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="64" height="64" rx="16" fill="#1e293b"/>
+        <path d="M20 42L32 30L44 42" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20 30L32 18L44 30" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h1 class="splash-title">FinanzApp</h1>
+    </div>
+  </div>
+
   <div class="app-container">
     
+    <!-- HEADER SUPERIOR -->
     <header class="app-header">
       <div class="brand-box">
-        <i class="ph-bold ph-shield-check brand-icon"></i>
+        <svg class="header-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="14" fill="#1e293b"/>
+          <path d="M20 42L32 30L44 42" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M20 30L32 18L44 30" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <span class="brand-title">FinanzApp</span>
       </div>
       <div class="status-pill">
@@ -38,88 +53,129 @@
       </div>
     </header>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
       
       <!-- SECCIÓN 1: NUEVO MOVIMIENTO -->
       <section id="sec-dashboard" class="tab-content active">
         <div class="module-card">
           
-          <div class="hero-step-box">
-            <div class="step-badge">
-              <i class="ph-bold ph-number-circle-one"></i> Paso 1
+          <!-- ASISTENTE POLLITO GRANDE (INICIAL) Y MINI POLLITO FLOTANTE (CUANDO AVANZAS) -->
+          <div id="wrapperAsistentePollito" class="chicken-hero-container">
+            <div class="chicken-big-avatar">
+              <img src="assets/pollito-assistant.png" alt="Asistente Pollito" class="chicken-img-large">
             </div>
-            <h2 class="hero-title">Selecciona el Tipo de Operación</h2>
-            <p class="hero-desc">Elige la naturaleza del movimiento para cargar los campos requeridos.</p>
-
-            <div class="type-selector-grid">
-              <label class="type-option-card">
-                <input type="radio" name="tipoOperacion" value="PAGO_GASTO" onchange="mostrarRestoFormulario()">
-                <div class="type-card-body">
-                  <div class="type-icon icon-expense">
-                    <i class="ph-bold ph-arrow-up-right"></i>
-                  </div>
-                  <div class="type-info">
-                    <span class="type-title">Registrar Pago</span>
-                    <span class="type-sub">Universidad, alquiler, servicios</span>
-                  </div>
-                  <i class="ph-bold ph-check-circle check-icon"></i>
-                </div>
-              </label>
-
-              <label class="type-option-card">
-                <input type="radio" name="tipoOperacion" value="DEPOSITO_RECIBIDO" onchange="mostrarRestoFormulario()">
-                <div class="type-card-body">
-                  <div class="type-icon icon-income">
-                    <i class="ph-bold ph-arrow-down-left"></i>
-                  </div>
-                  <div class="type-info">
-                    <span class="type-title">Registrar Depósito</span>
-                    <span class="type-sub">Abonos o transferencias recibidas</span>
-                  </div>
-                  <i class="ph-bold ph-check-circle check-icon"></i>
-                </div>
-              </label>
+            <div class="chicken-intro-text">
+              <span class="chicken-greeting-tag"><i class="ph-bold ph-hand-waving"></i> ¡Hola! Qué gusto verte por aquí</span>
+              <h1 class="chicken-main-heading">Soy tu compañero financiero.</h1>
+              <p class="chicken-sub-body">Estoy listo para ayudarte a registrar tus pagos, organizar tus comprobantes y cuidar cada sol de tu presupuesto de forma rápida, segura y muy fácil.</p>
             </div>
           </div>
 
-          <div id="seccionesRestantesFormulario" style="display: none;" class="step-two-container">
-            <form id="formTransaccion" class="custom-form">
-              
-              <div class="form-section-title">
-                <i class="ph-bold ph-number-circle-two"></i> Detalles de la Operación
-              </div>
+          <!-- MINI POLLITO COMPAÑERO (SE ACTIVA AL SELECCIONAR TIPO DE PAGO) -->
+          <div id="wrapperMiniPollito" class="chicken-mini-companion" style="display: none;">
+            <div class="chicken-mini-avatar">
+              <img src="assets/pollito-assistant.png" alt="Asistente Pollito" class="chicken-img-mini">
+            </div>
+            <div class="chicken-mini-bubble">
+              <span>¡Aquí te acompaño! Vamos paso a paso. 🐥</span>
+            </div>
+          </div>
 
-              <div class="form-group">
-                <label class="form-label">Categoría Correspondiente</label>
-                <div id="gridCategorias" class="category-cards-grid"></div>
-                <input type="hidden" id="categoriaIdInput">
-                <input type="hidden" id="montoInput">
-              </div>
+          <!-- PASO 1: SELECCIÓN PRINCIPAL DE TARJETAS 3D (MÁS GRANDES Y LLAMATIVAS) -->
+          <div class="step-card-container hero-action-screen">
+            <div class="step-header text-center">
+              <h2 class="step-title-main center-title">¿Qué tipo de pago deseas registrar?</h2>
+            </div>
+
+            <div class="hero-type-selector-grid">
+              
+              <!-- PAGAR UN SERVICIO -->
+              <label class="type-card-item">
+                <input type="radio" name="tipoOperacion" value="PAGO_GASTO" onchange="seleccionarTipoPaso1('PAGO_GASTO')">
+                <div class="type-card-box hero-button-card expense-border">
+                  <div class="type-3d-icon-box">
+                    <svg viewBox="0 0 100 100" class="icon-svg-3d">
+                      <rect x="25" y="15" width="50" height="70" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="4"/>
+                      <circle cx="65" cy="55" r="12" fill="#fbbf24"/>
+                      <text x="61" y="60" font-size="16" font-weight="bold" fill="#78350f">$</text>
+                      <line x1="35" y1="30" x2="60" y2="30" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+                      <line x1="35" y1="42" x2="60" y2="42" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+                      <path d="M50 70C50 70 35 60 35 48V35" stroke="#3b82f6" stroke-width="4" fill="none"/>
+                      <circle cx="35" cy="35" r="4" fill="#3b82f6"/>
+                    </svg>
+                  </div>
+                  <div class="type-text-content center-text">
+                    <h3 class="type-head">Pagar un Servicio</h3>
+                    <span class="type-tag">Gasto / Salida</span>
+                  </div>
+                </div>
+              </label>
+
+              <!-- DEPOSITAR / INGRESO -->
+              <label class="type-card-item">
+                <input type="radio" name="tipoOperacion" value="DEPOSITO_RECIBIDO" onchange="seleccionarTipoPaso1('DEPOSITO_RECIBIDO')">
+                <div class="type-card-box hero-button-card income-border">
+                  <div class="type-3d-icon-box">
+                    <svg viewBox="0 0 100 100" class="icon-svg-3d">
+                      <rect x="30" y="40" width="45" height="35" rx="4" fill="#94a3b8" stroke="#64748b" stroke-width="3"/>
+                      <circle cx="52" cy="57" r="7" fill="#334155"/>
+                      <path d="M60 25L75 40H45L60 25Z" fill="#10b981"/>
+                      <path d="M25 60L40 45" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+                      <path d="M30 65C30 65 40 55 50 55" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="type-text-content center-text">
+                    <h3 class="type-head">Depositar / Ingreso</h3>
+                    <span class="type-tag">Abono / Ingreso</span>
+                  </div>
+                </div>
+              </label>
+
+            </div>
+          </div>
+
+          <!-- PASO 2: OCULTO INICIALMENTE -->
+          <div id="paso2Categoria" class="step-card-container" style="display: none;">
+            <div class="step-header">
+              <span class="step-badge-pill">Paso 2</span>
+              <h2 class="step-title-main">Selecciona la Categoría</h2>
+            </div>
+            <div id="gridCategorias" class="category-cards-grid"></div>
+          </div>
+
+          <!-- PASO 3: OCULTO INICIALMENTE -->
+          <div id="paso3Detalles" class="step-card-container" style="display: none;">
+            <div class="step-header">
+              <span class="step-badge-pill">Paso 3</span>
+              <h2 class="step-title-main">Completar Datos y Voucher</h2>
+            </div>
+
+            <form id="formTransaccion" class="custom-form">
+              <input type="hidden" id="categoriaIdInput">
+              <input type="hidden" id="montoInput">
 
               <div id="wrapperOpcionesSemanal" class="form-group" style="display: none;">
-                <label class="form-label">Tramo de Cuota Semanal</label>
+                <label class="form-label">Tramo Cuota Semanal</label>
                 <div class="semanal-cards-grid">
                   <div class="semanal-card selected" onclick="seleccionarMontoSemanal(150, this)">
-                    <span>Tramo Lunes</span>
-                    <strong class="sub-monto">S/ 150.00</strong>
+                    <span>Lunes - S/ 150.00</span>
                   </div>
                   <div class="semanal-card" onclick="seleccionarMontoSemanal(100, this)">
-                    <span>Tramo Jueves</span>
-                    <strong class="sub-monto">S/ 100.00</strong>
+                    <span>Jueves - S/ 100.00</span>
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Periodo o Mes</label>
+                <label class="form-label">Selecciona el Mes</label>
                 <div id="gridMeses" class="months-cards-grid"></div>
                 <input type="hidden" id="mesInput">
               </div>
 
               <div class="form-group">
-                <label class="form-label">Importe a Registrar</label>
+                <label class="form-label">Importe</label>
                 <div id="displayMontoCard" class="monto-display-box">
-                  <span class="monto-label">Monto Total</span>
                   <h2 id="displayMontoText" class="monto-val">S/ 0.00</h2>
                 </div>
 
@@ -141,22 +197,22 @@
                 </div>
               </div>
 
-              <div class="form-group file-upload-box">
-                <div class="file-box-header">
-                  <span class="mandatory-badge"><i class="ph-bold ph-warning-circle"></i> Requerido</span>
-                  <label id="comprobanteTitleLabel" class="file-box-title">Comprobante de Operación</label>
-                  <p class="file-box-desc">Adjunta la captura del voucher bancario o transferencia para validar.</p>
+              <div class="form-group file-upload-box-enhanced">
+                <div class="file-upload-header">
+                  <span class="mandatory-badge-pill">Requisito Obligatorio</span>
+                  <label class="file-box-title">Comprobante / Voucher</label>
+                  <p class="file-box-sub">Toma una foto o selecciona el comprobante de tu galería.</p>
                 </div>
 
-                <div class="file-upload-container">
+                <div class="file-upload-interactive-wrapper">
                   <input type="file" id="comprobanteDirectoInput" accept="image/*" class="file-input-hidden" multiple>
-                  <label for="comprobanteDirectoInput" class="file-upload-label">
-                    <div class="file-upload-icon-box">
-                      <i class="ph-bold ph-upload-simple"></i>
+                  <label id="uploadDropZone" for="comprobanteDirectoInput" class="upload-drop-zone">
+                    <div class="upload-icon-circle">
+                      <i class="ph-bold ph-camera"></i>
                     </div>
-                    <div class="file-upload-info">
-                      <span id="fileNameLabel" class="file-main-text">Seleccionar voucher o tomar foto</span>
-                      <span class="file-sub-text">Formatos permitidos: JPG, PNG</span>
+                    <div class="upload-text-content">
+                      <span id="fileNameLabel" class="upload-main-text">Toca aquí para subir voucher</span>
+                      <span class="upload-sub-text">Archivos JPG o PNG</span>
                     </div>
                   </label>
                 </div>
@@ -165,14 +221,24 @@
               <button type="submit" class="btn btn-primary btn-block">
                 <i class="ph-bold ph-floppy-disk"></i> Guardar Operación
               </button>
-
             </form>
           </div>
 
         </div>
       </section>
 
-      <!-- SECCIÓN 2: BALANCE GENERAL -->
+      <!-- SECCIÓN 2: RECIBOS -->
+      <section id="sec-boletas" class="tab-content" style="display: none;">
+        <div class="module-card">
+          <div class="section-top-bar">
+            <h2 class="page-head-title">Recibos de Pagos</h2>
+            <p class="page-head-sub">Selecciona una categoría para desplegar sus detalles.</p>
+          </div>
+          <div id="gridTodasCategoriasRecibos" class="categories-list-stack"></div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: BALANCE GENERAL -->
       <section id="sec-balance" class="tab-content" style="display: none;">
         <div class="module-card">
           
@@ -194,18 +260,15 @@
                 <span class="hero-sub-label">Saldo Neto Disponible</span>
                 <h1 id="saldoDisponible" class="hero-main-amount">S/ 0.00</h1>
               </div>
-              <div class="health-badge positive" id="badgeEstadoCuenta">
-                <i class="ph-bold ph-shield-check"></i> Balance al Día
-              </div>
             </div>
 
             <div class="hero-totals-row">
               <div class="hero-total-item">
-                <span class="lbl-mini">Total Depósitos:</span>
+                <span class="lbl-mini"><i class="ph-bold ph-arrow-down-left"></i> Total Ingresos:</span>
                 <strong id="totalDepositado" class="text-emerald">S/ 0.00</strong>
               </div>
               <div class="hero-total-item">
-                <span class="lbl-mini">Total Pagos:</span>
+                <span class="lbl-mini"><i class="ph-bold ph-arrow-up-right"></i> Total Gastos:</span>
                 <strong id="totalPagado" class="text-rose">S/ 0.00</strong>
               </div>
             </div>
@@ -213,7 +276,7 @@
             <div class="progress-bar-wrapper">
               <div class="progress-info">
                 <span>Ejecución del Fondo</span>
-                <span id="porcentajeConsumoText">0% consumido</span>
+                <span id="porcentajeConsumoText">0% gastado</span>
               </div>
               <div class="progress-track">
                 <div id="progressBarFill" class="progress-fill" style="width: 0%;"></div>
@@ -221,155 +284,63 @@
             </div>
           </div>
 
-          <div class="balance-section-box">
-            <h4 class="section-subtitle text-emerald"><i class="ph-bold ph-arrow-down-left"></i> Depósitos & Abonos Recibidos</h4>
-            <div class="services-breakdown-grid">
-              
-              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-dep-semanal')">
-                <div class="service-card-header">
-                  <div class="service-icon weekly"><i class="ph-bold ph-hand-coins"></i></div>
-                  <div class="service-titles">
-                    <h4>Depósitos Semanales</h4>
-                    <span id="subCountDepSemanal" class="service-sub">0 abonos</span>
-                  </div>
-                </div>
-                <div class="service-right-side">
-                  <h3 id="montoDepSemanal" class="service-amount text-emerald">S/ 0.00</h3>
-                  <span class="expand-hint">Detalle <i class="ph-bold ph-caret-down"></i></span>
-                </div>
-                <div id="months-dep-semanal" class="balance-months-dropdown" style="display: none;"></div>
+          <!-- BARRA 1: DEPÓSITOS -->
+          <div class="balance-main-bar income-bar" onclick="toggleSeccionBalance('blockDepositosBalance')">
+            <div class="bar-left">
+              <i class="ph-bold ph-arrow-down-left bar-icon income"></i>
+              <div>
+                <h4>Depósitos & Abonos</h4>
+                <span id="subCountDepMain" class="bar-sub">0 abonos registrados</span>
               </div>
-
-              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-dep-directos')">
-                <div class="service-card-header">
-                  <div class="service-icon uni"><i class="ph-bold ph-bank"></i></div>
-                  <div class="service-titles">
-                    <h4>Depósitos Servicios / Uni</h4>
-                    <span id="subCountDepDirectos" class="service-sub">0 abonos</span>
-                  </div>
-                </div>
-                <div class="service-right-side">
-                  <h3 id="montoDepDirectos" class="service-amount text-emerald">S/ 0.00</h3>
-                  <span class="expand-hint">Detalle <i class="ph-bold ph-caret-down"></i></span>
-                </div>
-                <div id="months-dep-directos" class="balance-months-dropdown" style="display: none;"></div>
-              </div>
-
+            </div>
+            <div class="bar-right">
+              <h3 id="totalDepositadoBar" class="text-emerald">S/ 0.00</h3>
+              <i class="ph-bold ph-caret-down arrow-toggle"></i>
             </div>
           </div>
+          <div id="blockDepositosBalance" class="balance-expanded-content" style="display: none;">
+            <div id="gridDetalleDepositosBalance" class="services-breakdown-grid"></div>
+          </div>
 
-          <div class="balance-section-box">
-            <h4 class="section-subtitle text-rose"><i class="ph-bold ph-arrow-up-right"></i> Pagos & Servicios Ejecutados</h4>
-            <div class="services-breakdown-grid">
-              
-              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-uni')">
-                <div class="service-card-header">
-                  <div class="service-icon uni"><i class="ph-bold ph-graduation-cap"></i></div>
-                  <div class="service-titles">
-                    <h4>Universidad</h4>
-                    <span id="subCountUni" class="service-sub">0 pagos</span>
-                  </div>
-                </div>
-                <div class="service-right-side">
-                  <h3 id="montoUni" class="service-amount">S/ 0.00</h3>
-                  <span class="expand-hint">Detalle <i class="ph-bold ph-caret-down"></i></span>
-                </div>
-                <div id="months-pago-uni" class="balance-months-dropdown" style="display: none;"></div>
+          <!-- BARRA 2: PAGOS -->
+          <div class="balance-main-bar expense-bar" onclick="toggleSeccionBalance('blockPagosBalance')">
+            <div class="bar-left">
+              <i class="ph-bold ph-arrow-up-right bar-icon expense"></i>
+              <div>
+                <h4>Pagos & Servicios</h4>
+                <span id="subCountPagMain" class="bar-sub">0 pagos registrados</span>
               </div>
-
-              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-alquiler')">
-                <div class="service-card-header">
-                  <div class="service-icon room"><i class="ph-bold ph-house-line"></i></div>
-                  <div class="service-titles">
-                    <h4>Alquiler de Cuarto</h4>
-                    <span id="subCountAlquiler" class="service-sub">0 pagos</span>
-                  </div>
-                </div>
-                <div class="service-right-side">
-                  <h3 id="montoAlquiler" class="service-amount">S/ 0.00</h3>
-                  <span class="expand-hint">Detalle <i class="ph-bold ph-caret-down"></i></span>
-                </div>
-                <div id="months-pago-alquiler" class="balance-months-dropdown" style="display: none;"></div>
-              </div>
-
-              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-net')">
-                <div class="service-card-header">
-                  <div class="service-icon net"><i class="ph-bold ph-wifi-high"></i></div>
-                  <div class="service-titles">
-                    <h4>Internet</h4>
-                    <span id="subCountInternet" class="service-sub">0 pagos</span>
-                  </div>
-                </div>
-                <div class="service-right-side">
-                  <h3 id="montoInternet" class="service-amount">S/ 0.00</h3>
-                  <span class="expand-hint">Detalle <i class="ph-bold ph-caret-down"></i></span>
-                </div>
-                <div id="months-pago-net" class="balance-months-dropdown" style="display: none;"></div>
-              </div>
-
-              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-semanal')">
-                <div class="service-card-header">
-                  <div class="service-icon weekly"><i class="ph-bold ph-hand-coins"></i></div>
-                  <div class="service-titles">
-                    <h4>Cuotas Semanales</h4>
-                    <span id="subCountSemanal" class="service-sub">0 pagos</span>
-                  </div>
-                </div>
-                <div class="service-right-side">
-                  <h3 id="montoSemanal" class="service-amount">S/ 0.00</h3>
-                  <span class="expand-hint">Detalle <i class="ph-bold ph-caret-down"></i></span>
-                </div>
-                <div id="months-pago-semanal" class="balance-months-dropdown" style="display: none;"></div>
-              </div>
-
-              <div class="service-card clickable-card" onclick="toggleDetalleMesesBalance('months-pago-extra')">
-                <div class="service-card-header">
-                  <div class="service-icon extra"><i class="ph-bold ph-receipt"></i></div>
-                  <div class="service-titles">
-                    <h4>Gastos Adicionales</h4>
-                    <span id="subCountAdicionales" class="service-sub">0 gastos</span>
-                  </div>
-                </div>
-                <div class="service-right-side">
-                  <h3 id="montoAdicionales" class="service-amount">S/ 0.00</h3>
-                  <span class="expand-hint">Detalle <i class="ph-bold ph-caret-down"></i></span>
-                </div>
-                <div id="months-pago-extra" class="balance-months-dropdown" style="display: none;"></div>
-              </div>
-
             </div>
+            <div class="bar-right">
+              <h3 id="totalPagadoBar" class="text-rose">S/ 0.00</h3>
+              <i class="ph-bold ph-caret-down arrow-toggle"></i>
+            </div>
+          </div>
+          <div id="blockPagosBalance" class="balance-expanded-content" style="display: none;">
+            <div id="gridDetallePagosBalance" class="services-breakdown-grid"></div>
           </div>
 
         </div>
       </section>
 
-      <!-- SECCIÓN 3: HISTORIAL -->
-      <section id="sec-historial" class="tab-content" style="display: none;">
+      <!-- SECCIÓN 4: DEPÓSITOS -->
+      <section id="sec-depositos" class="tab-content" style="display: none;">
         <div class="module-card">
-          <div class="panel-header">
-            <h3 id="tituloLista"><i class="ph-bold ph-receipt"></i> Historial de Movimientos</h3>
+          <div class="section-top-bar">
+            <h2 class="page-head-title">Depósitos Recibidos</h2>
+            <p class="page-head-sub">Selecciona una categoría para desplegar sus detalles.</p>
           </div>
-
-          <div class="search-box-wrapper">
-            <i class="ph-bold ph-magnifying-glass search-icon"></i>
-            <input type="text" id="buscadorInput" class="form-input search-input" placeholder="Buscar por periodo o mes..." oninput="filtrarPorBuscador(this.value)">
-          </div>
-
-          <div id="listaCategoriasAgrupadas" class="accordion-container"></div>
+          <div id="gridTodasCategoriasDepositos" class="categories-list-stack"></div>
         </div>
       </section>
 
       <footer class="system-footer">
-        <div class="footer-badge">
-          <i class="ph-bold ph-shield-check"></i> Sistema Oficial de Control Finanzas
-        </div>
-        <p class="footer-author">Desarrollado por <strong>Diego Valentino Mayo Samaritano</strong></p>
-        <p class="footer-role">Encargado del registro e implementación de sistemas automáticos de procesos.</p>
-        <p class="footer-purpose">Diseñado para garantizar trazabilidad y transparencia en la gestión de depósitos y pagos de servicios.</p>
+        <p class="footer-author">FinanzApp - Desarrollado por <strong>Diego Valentino Mayo Samaritano</strong></p>
       </footer>
 
     </main>
 
+    <!-- NAVEGACIÓN INFERIOR FIJA -->
     <nav class="mobile-tab-bar">
       <button type="button" id="nav-dashboard" class="tab-item active" onclick="cambiarSeccion('dashboard', event)">
         <i class="ph-bold ph-plus-circle"></i>
@@ -394,6 +365,7 @@
 
   </div>
 
+  <!-- MODAL DE DETALLE -->
   <div id="modalDetalle" class="modal-overlay" style="display: none;">
     <div class="modal-card">
       <button type="button" class="modal-close-btn" onclick="cerrarModalDetalle()">
@@ -402,41 +374,55 @@
       
       <div class="modal-header">
         <span id="modalCategoriaBadge" class="tx-category">Categoría</span>
-        <h3 id="modalConceptoTitle">Periodo - Concepto</h3>
+        <h3 id="modalConceptoTitle" class="modal-concepto">Periodo - Concepto</h3>
         <h1 id="modalMontoText" class="modal-monto">S/ 0.00</h1>
       </div>
 
       <div class="modal-body-details">
         <div class="detail-row">
-          <span><i class="ph-bold ph-calendar-blank"></i> Fecha:</span>
+          <span><i class="ph-bold ph-clock"></i> Hora y Fecha:</span>
           <strong id="modalFechaText">--/--/---- --:--</strong>
         </div>
         <div class="detail-row">
-          <span><i class="ph-bold ph-swap"></i> Tipo:</span>
+          <span><i class="ph-bold ph-swap"></i> Tipo de Registro:</span>
           <strong id="modalTipoText">--</strong>
         </div>
       </div>
 
       <div class="modal-voucher-wrapper">
-        <span class="voucher-label"><i class="ph-bold ph-image"></i> Comprobantes Adjuntos:</span>
+        <span class="voucher-label"><i class="ph-bold ph-image"></i> Captura de Comprobante (Haz clic para ampliar):</span>
         <div id="modalVouchersGrid" class="vouchers-gallery-grid"></div>
       </div>
     </div>
   </div>
 
+  <!-- VISOR DE IMAGEN AMPLIADA -->
+  <div id="modalImageViewer" class="image-viewer-overlay" style="display: none;" onclick="cerrarVisorImagenAmplia()">
+    <button type="button" class="viewer-close-btn" onclick="cerrarVisorImagenAmplia()"><i class="ph-bold ph-x"></i></button>
+    <img id="imageViewerTarget" class="image-viewer-content" src="" alt="Comprobante Ampliado">
+  </div>
+
+  <!-- SCRIPTS -->
   <script src="js/supabaseClient.js"></script>
   <script src="js/UI.js"></script>
   <script src="js/transacciones.js"></script>
   <script src="js/app.js"></script>
 
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('Service Worker PWA Registrado'))
-          .catch(err => console.warn('Error registrando SW PWA:', err));
-      });
-    }
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+          splash.classList.add('fade-out');
+          setTimeout(() => splash.style.display = 'none', 300);
+        }
+      }, 800);
+    });
   </script>
+  <!-- OVERLAY DE TRANSICIÓN CON EL POLLITO -->
+  <div id="chickenTransitionOverlay">
+    <img src="assets/pollito-assistant.png" alt="Pollito Transición" class="transition-chicken-img">
+    <span class="transition-text">¡Preparando tu registro... 🐥!</span>
+  </div>
 </body>
 </html>
