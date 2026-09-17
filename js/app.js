@@ -6,16 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = document.getElementById('fileNameLabel');
       const files = e.target.files;
 
-      if (files.length === 1) {
-        label.innerText = `1 captura adjuntada: ${files[0].name}`;
-      } else if (files.length === 2) {
-        label.innerText = `2 capturas adjuntadas: ${files[0].name}, ${files[1].name}`;
-      } else if (files.length > 2) {
-        alert('Solo se permite adjuntar máximo 2 imágenes.');
-        fileInput.value = '';
-        label.innerText = 'Adjuntar captura obligatoria';
+      if (files.length > 0) {
+        label.innerText = `${files.length} captura(s) lista(s) para subir`;
       } else {
-        label.innerText = 'Adjuntar captura obligatoria';
+        label.innerText = 'Haz clic aquí para seleccionar la captura';
       }
     });
   }
@@ -27,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const radioSeleccionado = document.querySelector('input[name="tipoOperacion"]:checked');
       if (!radioSeleccionado) {
-        Swal.fire({ icon: 'warning', title: 'Selección Requerida', text: 'Por favor, selecciona primero la naturaleza de la operación.', confirmButtonColor: '#10b981' });
+        Swal.fire({ icon: 'warning', title: 'Selección Requerida', text: 'Por favor, selecciona primero la naturaleza de la operación en el Paso 1.', confirmButtonColor: '#10b981' });
         return;
       }
 
@@ -44,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (fileInput) fileInput.value = '';
       const label = document.getElementById('fileNameLabel');
-      if (label) label.innerText = 'Adjuntar captura obligatoria';
+      if (label) label.innerText = 'Haz clic aquí para seleccionar la captura';
 
-      // Resetear el formulario ocultando los pasos nuevamente
+      // Restablece el formulario sin bloquear futuros ingresos
       resetearFormularioAInicial();
     });
   }

@@ -120,10 +120,10 @@ function seleccionarTarjetaCategoria(id, nombreCategoria, elemento) {
 
   if (nombre.includes('alquiler') || nombre.includes('cuarto')) {
     labelComprobanteTitle.innerText = "5. Comprobante / Recibo (Permite 1 o 2 Capturas)";
-    labelFileName.innerText = "Adjuntar 1 o 2 capturas obligatorias";
+    labelFileName.innerText = "Haz clic aquí para seleccionar la(s) captura(s)";
   } else {
     labelComprobanteTitle.innerText = "5. Comprobante / Recibo (Obligatorio)";
-    labelFileName.innerText = "Adjuntar captura obligatoria";
+    labelFileName.innerText = "Haz clic aquí para seleccionar la captura";
   }
 
   if (nombre.includes('semana') || nombre.includes('semanal')) {
@@ -243,7 +243,7 @@ function renderizarListaTransacciones(items) {
             <span>${nombreCat}</span>
           </div>
           <div class="accordion-meta">
-            <span class="badge-count">${registros.length} Periodo(s)</span>
+            <span class="badge-count">${registros.length} Registro(s)</span>
             <i class="ph-bold ph-caret-down arrow-icon"></i>
           </div>
         </div>

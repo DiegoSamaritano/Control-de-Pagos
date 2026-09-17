@@ -69,41 +69,15 @@ async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_opera
     return;
   }
 
-  if (archivosComprobantes.length > 2) {
-    Swal.fire({ icon: 'warning', title: 'Límite Excedido', text: 'Solo se permite adjuntar un máximo de 2 capturas por registro.', confirmButtonColor: '#10b981' });
-    return;
-  }
+  Swal.fire({ title: 'Guardando registro...', text: 'Subiendo comprobante a Supabase', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-  Swal.fire({ title: 'Verificando registro...', text: 'Consultando la base de datos de Supabase', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-
-  const { data: duplicados, error: checkError } = await _supabase
-    .from('transacciones')
-    .select('id, concepto')
-    .eq('categoria_id', categoria_id)
-    .eq('concepto', concepto)
-    .eq('estado', 'COMPLETADO');
-
-  if (checkError) {
-    Swal.fire('Error', 'No se pudo verificar el historial: ' + checkError.message, 'error');
-    return;
-  }
-
-  if (duplicados && duplicados.length > 0) {
-    Swal.fire({
-      icon: 'error',
-      title: '¡Operación Ya Registrada!',
-      html: `La liquidación para la categoría seleccionada en el periodo <b>${concepto}</b> ya se encuentra registrada.<br><br>Por favor, <b>selecciona otro mes</b> para continuar.`,
-      confirmButtonColor: '#f43f5e'
-    });
-    return;
-  }
-
+  // Subida de archivos a Supabase Storage SIN BLOQUEOS
   const urlsSubidas = [];
 
   for (let i = 0; i < archivosComprobantes.length; i++) {
     const file = archivosComprobantes[i];
     const fileExt = file.name.split('.').pop();
-    const fileName = `voucher_${Date.now()}_${i + 1}.${fileExt}`;
+    const fileName = `voucher_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
 
     const { error: uploadError } = await _supabase.storage
       .from('comprobantes')
@@ -123,6 +97,7 @@ async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_opera
 
   const comprobanteFinalUrl = urlsSubidas.length === 1 ? urlsSubidas[0] : JSON.stringify(urlsSubidas);
 
+  // Inserción directa
   const { error } = await _supabase.from('transacciones').insert([{
     categoria_id,
     concepto,
@@ -138,7 +113,7 @@ async function guardarNuevaTransaccion(categoria_id, concepto, monto, tipo_opera
     return;
   }
 
-  Swal.fire({ icon: 'success', title: '¡Operación Guardada!', text: `Se registró correctamente el periodo ${concepto}.`, confirmButtonColor: '#10b981', timer: 2000 });
+  Swal.fire({ icon: 'success', title: '¡Operación Guardada!', text: `Se registró correctamente el pago/depósito de ${concepto}.`, confirmButtonColor: '#10b981', timer: 2000 });
 
   obtenerTransacciones();
 }
